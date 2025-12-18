@@ -46,15 +46,28 @@ def generar_codigo_qr(cedula):
     codigo = "".join(mezcla) + str(random.randint(100, 999))
     return codigo
 
-
 def registrar_usuario():
     nombre = input("Ingrese sus nombres: ")
     apellido = input("Ingrese sus apellidos: ")
     cedula = input("Ingrese su número de cedula: ")
-    fecha_nacimiento = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
 
-    anio_nac = int(fecha_nacimiento.split("-")[0])
-    edad = datetime.now().year - anio_nac
+    # VALIDACIÓN DE FECHA (YYYY-MM-DD)
+    while True:
+        fecha_nacimiento = input(
+            "Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
+
+        try:
+            fecha_dt = datetime.strptime(fecha_nacimiento, "%Y-%m-%d")
+            break
+        except ValueError:
+            print("Formato incorrecto. Use el formato YYYY-MM-DD.")
+
+    # CÁLCULO DE EDAD
+    hoy = datetime.now()
+    edad = hoy.year - fecha_dt.year - (
+        (hoy.month, hoy.day) < (fecha_dt.month, fecha_dt.day)
+    )
+
     mayor_edad = "Sí" if edad >= 18 else "No"
 
     if mayor_edad == "No":
